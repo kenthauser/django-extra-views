@@ -5,6 +5,7 @@ from django.forms.models import modelformset_factory, inlineformset_factory
 from django.views.generic.detail import SingleObjectMixin, SingleObjectTemplateResponseMixin
 from django.views.generic.list import MultipleObjectMixin, MultipleObjectTemplateResponseMixin
 from django.forms.models import BaseInlineFormSet
+from django.utils import six
 from django.utils.functional import curry
 from .compat import ContextMixin
 
@@ -22,6 +23,15 @@ class BaseFormSetMixin(object):
     max_num = None
     can_order = False
     can_delete = False
+
+    def __init__(self, **kwargs):
+        """
+        Constructor. Allow keyword argument to override defaults
+        """
+
+        # Go through keyword arguments, and either save their values to our instance
+        for key, value in six.iteritems(kwargs):
+            setattr(self, key, value)
 
     def construct_formset(self):
         """
